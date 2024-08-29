@@ -73,10 +73,7 @@ export default {
 			});
 		}
 
-		const nowDate = new Date().toLocaleString("nl-NL", {
-			timeStyle: "short",
-			dateStyle: "full",
-		});
+		const nowDate = new Date().toLocaleDateString("nl-NL", { dateStyle: "short" }) + " om " + new Date().toLocaleTimeString("nl-NL", { timeStyle: "long" });
 		console.log(nowDate);
 
 		const reshapedVEvents: VEVENT[] = [];
@@ -90,7 +87,7 @@ export default {
 				DESCRIPTION += `- ${event.summary}\\n`;
 			}
 
-			DESCRIPTION += `\\n\\n Laatst gesynchroniseerd op ${nowDate}`;
+			DESCRIPTION += `\\n\\nLaatst gesynchroniseerd op ${nowDate}`;
 
 			const dateObj = new Date(
 				date.replace(/^(.{4})(.{2})/, "$1" + "-" + "$2" + "-"),
