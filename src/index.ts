@@ -73,7 +73,7 @@ export default {
 			});
 		}
 
-		const nowDate = new Date().toLocaleDateString("nl-NL", { dateStyle: "short" }) + " om " + new Date().toLocaleTimeString("nl-NL", { timeStyle: "long" });
+		const nowDate = new Date().toLocaleDateString("nl-NL", { dateStyle: "short", timeZone: "Europe/Amsterdam" }) + " om " + new Date().toLocaleTimeString("nl-NL", { timeStyle: "long", timeZone: "Europe/Amsterdam" });
 		console.log(nowDate);
 
 		const reshapedVEvents: VEVENT[] = [];
