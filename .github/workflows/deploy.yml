@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to Cloudflare
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy
+    name: Deploy to Cloudflare
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
