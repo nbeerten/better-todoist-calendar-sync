@@ -15,6 +15,7 @@ import { convert, revert } from "./ical2json";
 import type { JSONCalendar, VEVENT } from "./types";
 
 const baseURL = new URL("https://ext.todoist.com/export/ical/todoist");
+const baseURLforProject = new URL("https://ext.todoist.com/export/ical/project");
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
@@ -27,14 +28,16 @@ export default {
 		else if (path === "/text") expects = "text/plain";
 		else if (path === "/ical") expects = "text/calendar";
 
-		const { user_id, ical_token, r_factor } = Object.fromEntries(
+		const { user_id, ical_token, project_id = null, r_factor } = Object.fromEntries(
 			new URL(request.url).searchParams.entries(),
 		);
 
-		const requestUrl = new URL(baseURL);
+		const requestUrl = new URL(project_id ? baseURLforProject : baseURL);
 		requestUrl.searchParams.set("user_id", user_id);
 		requestUrl.searchParams.set("ical_token", ical_token);
+		if(project_id) requestUrl.searchParams.set("project_id", project_id);
 		requestUrl.searchParams.set("r_factor", r_factor);
+
 
 		const todoistIcal = await fetch(requestUrl).then((res) => res.text());
 
