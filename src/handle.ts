@@ -123,47 +123,71 @@ export async function handle(
 	}
 
 	const projectIdMap = new Map<string, { name: string; url: string }>();
+	const projectFetchList: Promise<{ id: string; name: string; url: string }>[] =
+		[];
 	for (const projectId of projectIds) {
-		const projectRes = await fetch(`${apiBaseURL}/projects/${projectId}`, {
-			headers: {
-				Authorization: `Bearer ${apiToken}`,
-			},
-		});
-
-		const project = (await projectRes.json()) as {
-			id: string;
-			name: string;
-			comment_count: number;
-			color: string;
-			is_shared: boolean;
-			order: number;
-			is_favorite: boolean;
-			is_inbox_project: boolean;
-			is_team_inbox: boolean;
-			view_style: string;
-			url: string;
-			parent_id: unknown;
-		};
-
-		projectIdMap.set(projectId, { name: project.name, url: project.url });
+		projectFetchList.push(
+			fetch(`${apiBaseURL}/projects/${projectId}`, {
+				headers: {
+					Authorization: `Bearer ${apiToken}`,
+				},
+				cf: {
+					// Always cache this fetch regardless of content type
+					// for a max of 60 * 30 = 30 minutes before revalidating the resource
+					cacheTtl: 60 * 30,
+					cacheEverything: true,
+				},
+			})
+				.then(
+					(res) =>
+						res.json() as Promise<{
+							id: string;
+							name: string;
+							comment_count: number;
+							color: string;
+							is_shared: boolean;
+							order: number;
+							is_favorite: boolean;
+							is_inbox_project: boolean;
+							is_team_inbox: boolean;
+							view_style: string;
+							url: string;
+							parent_id: unknown;
+						}>,
+				)
+				.then((json) => ({ id: json.id, name: json.name, url: json.url })),
+		);
+	}
+	const projects = await Promise.all(projectFetchList);
+	for (const project of projects) {
+		projectIdMap.set(project.id, project);
 	}
 
 	const sectionIdMap = new Map<string, string>();
+	const sectionFetchList: Promise<{
+		id: string;
+		project_id: string;
+		order: number;
+		name: string;
+	}>[] = [];
 	for (const sectionId of sectionIds) {
-		const sectionRes = await fetch(`${apiBaseURL}/sections/${sectionId}`, {
-			headers: {
-				Authorization: `Bearer ${apiToken}`,
-			},
-		});
-
-		const section = (await sectionRes.json()) as {
-			id: string;
-			project_id: string;
-			order: number;
-			name: string;
-		};
-
-		sectionIdMap.set(sectionId, section.name);
+		sectionFetchList.push(
+			fetch(`${apiBaseURL}/sections/${sectionId}`, {
+				headers: {
+					Authorization: `Bearer ${apiToken}`,
+				},
+				cf: {
+					// Always cache this fetch regardless of content type
+					// for a max of 60 * 30 = 30 minutes before revalidating the resource
+					cacheTtl: 60 * 30,
+					cacheEverything: true,
+				},
+			}).then((res) => res.json()),
+		);
+	}
+	const sections = await Promise.all(sectionFetchList);
+	for (const section of sections) {
+		sectionIdMap.set(section.id, section.name);
 	}
 
 	const nowDate = `${new Date().toLocaleDateString("nl-NL", { dateStyle: "short", timeZone: "Europe/Amsterdam" })} om ${new Date().toLocaleTimeString("nl-NL", { timeStyle: "long", timeZone: "Europe/Amsterdam" })}`;
@@ -214,7 +238,7 @@ export async function handle(
 
 	const baseHeaders = {
 		"Cache-Control": "private, no-cache, no-store, no-transform",
-	}
+	};
 
 	if (expects === "text/calendar") {
 		return new Response(revert(jsonCalendar), {

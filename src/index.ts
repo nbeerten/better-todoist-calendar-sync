@@ -13,8 +13,6 @@
 
 import { handle } from "./handle";
 
-
-
 const README = `# Transform Todoist
 Initially developed as a tool to convert the Todoist iCal into a more comprehensible format, the application now utilizes the API to retrieve all tasks.
 This tool allows you to use an API token to create a link that creates an event for each day with tasks, and groups those tasks together in a nice overview.
@@ -31,7 +29,7 @@ This URL can now be added to your calendar, by clicking an option along the line
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const path = new URL(request.url).pathname;
-		if(request.method !== "GET" || path === "/") {
+		if (request.method !== "GET" || path === "/") {
 			return new Response(README, {
 				headers: {
 					"content-type": "text/plain",
