@@ -85,10 +85,15 @@ export async function handle(
 			description: string;
 			labels: Array<string>;
 			url: string;
+			projectId?: string;
+			sectionId?: string;
 			uid: string;
 			date: [string, string];
 		}[]
 	> = {};
+
+	const projectIds = new Set<string>();
+	const sectionIds = new Set<string>();
 
 	for (const task of res) {
 		if (task.due === null) continue;
@@ -101,15 +106,64 @@ export async function handle(
 			.replaceAll("-", "");
 		const date = task.due.date.replaceAll("-", "");
 
+		if (task.project_id) projectIds.add(task.project_id);
+		if (task.section_id) sectionIds.add(task.section_id);
+
 		activitiesByDate[date] = activitiesByDate[date] || [];
 		activitiesByDate[date].push({
 			summary: task.content,
 			description: task.description,
 			labels: task.labels,
 			url: task.url,
+			projectId: task.project_id,
+			sectionId: task.section_id,
 			uid: task.id,
 			date: [date, dateEnd],
 		});
+	}
+
+	const projectIdMap = new Map<string, { name: string; url: string }>();
+	for (const projectId of projectIds) {
+		const projectRes = await fetch(`${apiBaseURL}/projects/${projectId}`, {
+			headers: {
+				Authorization: `Bearer ${apiToken}`,
+			},
+		});
+
+		const project = (await projectRes.json()) as {
+			id: string;
+			name: string;
+			comment_count: number;
+			color: string;
+			is_shared: boolean;
+			order: number;
+			is_favorite: boolean;
+			is_inbox_project: boolean;
+			is_team_inbox: boolean;
+			view_style: string;
+			url: string;
+			parent_id: unknown;
+		};
+
+		projectIdMap.set(projectId, { name: project.name, url: project.url });
+	}
+
+	const sectionIdMap = new Map<string, string>();
+	for (const sectionId of sectionIds) {
+		const sectionRes = await fetch(`${apiBaseURL}/sections/${sectionId}`, {
+			headers: {
+				Authorization: `Bearer ${apiToken}`,
+			},
+		});
+
+		const section = (await sectionRes.json()) as {
+			id: string;
+			project_id: string;
+			order: number;
+			name: string;
+		};
+
+		sectionIdMap.set(sectionId, section.name);
 	}
 
 	const nowDate = `${new Date().toLocaleDateString("nl-NL", { dateStyle: "short", timeZone: "Europe/Amsterdam" })} om ${new Date().toLocaleTimeString("nl-NL", { timeStyle: "long", timeZone: "Europe/Amsterdam" })}`;
@@ -122,10 +176,24 @@ export async function handle(
 		let description = "";
 
 		for (const event of events) {
-			description += `<a href="${event.url}">${event.summary}</a><br><i>${event.labels.join(", ")}</i>`;
+			if (event.projectId) {
+				const projectInfo = projectIdMap.get(event.projectId);
+				if (!projectInfo) continue;
+				const projectText = `# <a href="${projectInfo.url}">${projectInfo.name}</a>`;
+				if (event.sectionId) {
+					const sectionName = sectionIdMap.get(event.sectionId);
+					if (!sectionName) continue;
+					description += `${projectText}  /  ${sectionName}<br>`;
+				} else {
+					description += `${projectText}<br>`;
+				}
+			}
+			description += `<a href="${event.url}"><b>${event.summary}</b></a><br>`;
+			if (event.labels.length > 0)
+				description += `🏷️ <i>${event.labels.join(", ")}</i><br>`;
 			if (event.description)
-				description += `<br>${event.description.replaceAll("\n", " ")}`;
-			description += "<br><br>";
+				description += `${event.description.replaceAll("\n", " ")}<br>`;
+			description += "<br>";
 		}
 
 		description += `<i>Laatst gesynchroniseerd op ${nowDate}</i>`;
