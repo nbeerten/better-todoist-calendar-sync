@@ -212,9 +212,14 @@ export async function handle(
 	jsonCalendar.VCALENDAR[0].UID = cyrb64(apiToken).toString();
 	jsonCalendar.VCALENDAR[0]["X-WR-CALNAME"] = "Todoist Tasks";
 
+	const baseHeaders = {
+		"Cache-Control": "private, no-cache, no-store, no-transform",
+	}
+
 	if (expects === "text/calendar") {
 		return new Response(revert(jsonCalendar), {
 			headers: {
+				...baseHeaders,
 				"content-type": "text/calendar",
 			},
 		});
@@ -222,6 +227,7 @@ export async function handle(
 	if (expects === "application/json") {
 		return new Response(JSON.stringify(jsonCalendar, null, 4), {
 			headers: {
+				...baseHeaders,
 				"content-type": "application/json",
 			},
 		});
@@ -229,6 +235,7 @@ export async function handle(
 	if (expects === "text/plain") {
 		return new Response(revert(jsonCalendar), {
 			headers: {
+				...baseHeaders,
 				"content-type": "text/plain",
 			},
 		});

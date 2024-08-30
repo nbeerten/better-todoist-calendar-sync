@@ -5,3 +5,8 @@ It works best on proton calendar, which I use, but it also works on Google Calen
 The description of the event needs to support simple HTML to use this calendar.
 
 Currently, it's only available in Dutch.
+
+Usage is as follows:
+Go to your Todoist settings, then navigate to the Integrations tab. Head to the "Developer" section, then copy your API Token.
+Then add the API token to the following URL: 'https://transform-todoist.nilsbeerten.nl/ical?apiToken={Your api token}'.
+This URL can now be added to your calendar, by clicking an option along the lines of "Via URL" or "Subscribe to a calendar".
