@@ -4,7 +4,7 @@ This tool allows you to use an API token to create a link that creates an event 
 It works best on proton calendar, which I use, but it also works on Google Calendar. 
 The description of the event needs to support simple HTML to use this calendar.
 
-Currently, it's only available in Dutch.
+Currently, it's only available in Dutch and English.
 
 Usage is as follows:
 Go to your Todoist settings, then navigate to the Integrations tab. Head to the "Developer" section, then copy your API Token.
