@@ -1,14 +1,34 @@
 # Transform Todoist
-Initially developed as a tool to convert the Todoist iCal into a more comprehensible format, the application now utilizes the API to retrieve all tasks.
-This tool allows you to use an API token to create a link that creates an event for each day with tasks, and groups those tasks together in a nice overview.
-It works best on proton calendar, which I use, but it also works on Google Calendar. 
-The description of the event needs to support simple HTML to use this calendar.
+This tool helps you see your Todoist tasks in a calendar format, making them easier to manage. Here's how it works:
 
-Currently, it's only available in Dutch and English.
+* **Retrieves Todoist Tasks:** It grabs all your Todoist tasks using your API token.
+* **Creates Daily Events:** It creates a daily calendar event with all your tasks for that day, nicely grouped together with information like labels, description and project + section.
+* **Works with Popular Calendars:** Initially optimized for use with Proton Calendar. From testing it also seems to work with Google Calendar.
 
-Usage is as follows:
-Go to your Todoist settings, then navigate to the Integrations tab. Head to the "Developer" section, then copy your API Token.
-Then add the API token to the following URL: `https://transform-todoist.nilsbeerten.nl/ical?apiToken={your_api_token}`.
-Additionally you should add the `lang` and `timeZone` query (add: `&lang=nl&timeZone=Europe/Amsterdam`). English (`en`) and Dutch (`nl`)
-are supported. The default timeZone is `Etc/Utc`.
-This URL can now be added to your calendar, by clicking an option along the lines of "Via URL" or "Subscribe to a calendar".
+## Setup
+
+1. **Get your Todoist API Token:**
+    * Go to Todoist settings -> Integrations -> Developer.
+    * Copy the API token shown there.
+
+2. **Build Your Calendar Link:**
+    * Take this base URL: `https://transform-todoist.nilsbeerten.nl/ical?apiToken={your_api_token}`
+    * Replace `{your_api_token}` with your actual API token you copied.
+
+3. **Set Your Language and Time Zone (Optional):**
+    * Want your calendar in Dutch (nl) or English (en)? Add `&lang={language}` to the URL after `apiToken`.
+    * Need a specific time zone? Add `&timeZone={your_timezone}` (e.g., `Europe/Amsterdam`). By default, it uses UTC.
+
+### Adding the Link to Your Calendar:
+
+* Look for an option in your calendar app like adding a calendar "Via URL" or "Subscribe to calendar".
+* Paste the completed URL you built in step 2 (and 3, if you added language/timezone).
+
+**Now you'll see your Todoist tasks neatly organized in your calendar!**
+
+> [!NOTE] 
+> This tool is currently only available in Dutch and English.
+
+## Future features
+* Project filtering: You'll be able to create calendar links that only show tasks from a specific project or multiple projects. This is perfect for focusing on tasks related to a particular project without getting overwhelmed by other tasks that you don't want in your calendar.
+* Task Sorting
