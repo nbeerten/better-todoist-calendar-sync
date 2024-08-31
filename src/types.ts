@@ -23,3 +23,31 @@ export type VEVENT = {
 	"DTSTART;VALUE=DATE-TIME"?: string;
 	"DTEND;VALUE=DATE-TIME"?: string;
 };
+
+export type TasksResponse = Array<{
+	id: string;
+	assigner_id: null;
+	assignee_id: null;
+	project_id: string;
+	section_id?: string;
+	parent_id: null;
+	order: number;
+	content: string;
+	description: string;
+	is_completed: boolean;
+	labels: Array<string>;
+	priority: number;
+	comment_count: number;
+	creator_id: string;
+	created_at: string;
+	due: {
+		date: string;
+		string: string;
+		lang: string;
+		is_recurring: boolean;
+		datetime?: string;
+	} | null;
+	url: string;
+	duration: null;
+	deadline: null;
+}>;
