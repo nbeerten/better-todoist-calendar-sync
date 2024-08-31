@@ -1,4 +1,4 @@
-# Transform Todoist
+# Better Todoist Calendar Sync (todoist-sync)
 This tool helps you see your Todoist tasks in a calendar format, making them easier to manage. Here's how it works:
 
 * **Retrieves Todoist Tasks:** It grabs all your Todoist tasks using your API token.
