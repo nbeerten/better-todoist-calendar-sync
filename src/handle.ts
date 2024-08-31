@@ -50,6 +50,19 @@ const cyrb64 = (str: string, seed = 0) => {
 	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
+function isValidTimeZone(tz: string) {
+	if (!Intl || !Intl.DateTimeFormat().resolvedOptions().timeZone) {
+		throw new Error("Time zones are not available in this environment");
+	}
+
+	try {
+		Intl.DateTimeFormat(undefined, { timeZone: tz });
+		return true;
+	} catch (e) {
+		return false;
+	}
+}
+
 export async function handle(
 	request: Request,
 	env: Env,
@@ -64,9 +77,18 @@ export async function handle(
 	else if (path === "/text") expects = "text/plain";
 	else if (path === "/ical") expects = "text/calendar";
 
-	const { apiToken } = Object.fromEntries(
+	const { apiToken, timeZone = "Etc/UTC", lang = "en" } = Object.fromEntries(
 		new URL(request.url).searchParams.entries(),
 	);
+
+	if(isValidTimeZone(timeZone) === false) {
+		return new Response(`Invalid time zone: ${timeZone}`, { status: 400 });
+	}
+
+	if(lang !== "nl" && lang !== "en") {
+		return new Response(`Invalid language: ${lang}. Only 'nl' and 'en' (British English) are supported`, { status: 400 });
+	}
+	const locale = new Intl.Locale(lang === "en" ? "en-GB" : "nl-NL");
 
 	const requestUrl = new Request(`${apiBaseURL}/tasks`, {
 		headers: {
@@ -74,9 +96,11 @@ export async function handle(
 		},
 	});
 
-	const res = (await fetch(requestUrl).then((res) =>
-		res.json(),
-	)) as TasksResponse;
+	const res = await fetch(requestUrl);
+	if (!res.ok)
+		return new Response((await res.text()) || "", { status: res.status });
+
+	const resJson = (await res.json()) as TasksResponse;
 
 	const activitiesByDate: Record<
 		string,
@@ -95,7 +119,7 @@ export async function handle(
 	const projectIds = new Set<string>();
 	const sectionIds = new Set<string>();
 
-	for (const task of res) {
+	for (const task of resJson) {
 		if (task.due === null) continue;
 		const dateObj = new Date(task.due.date);
 		const nextDayDateObj = new Date(task.due.date);
@@ -138,6 +162,15 @@ export async function handle(
 					cacheEverything: true,
 				},
 			})
+				.then((res) => {
+					if (res.ok) {
+						return res;
+					}
+
+					throw new Error(
+						`Fetch error for project ${projectId}: ${res.statusText}`,
+					);
+				})
 				.then(
 					(res) =>
 						res.json() as Promise<{
@@ -182,7 +215,17 @@ export async function handle(
 					cacheTtl: 60 * 30,
 					cacheEverything: true,
 				},
-			}).then((res) => res.json()),
+			})
+				.then((res) => {
+					if (res.ok) {
+						return res;
+					}
+
+					throw new Error(
+						`Fetch error for section ${sectionId}: ${res.statusText}`,
+					);
+				})
+				.then((res) => res.json()),
 		);
 	}
 	const sections = await Promise.all(sectionFetchList);
@@ -190,12 +233,18 @@ export async function handle(
 		sectionIdMap.set(section.id, section.name);
 	}
 
-	const nowDate = `${new Date().toLocaleDateString("nl-NL", { dateStyle: "short", timeZone: "Europe/Amsterdam" })} om ${new Date().toLocaleTimeString("nl-NL", { timeStyle: "long", timeZone: "Europe/Amsterdam" })}`;
+	const nowDate = `${new Date().toLocaleDateString(locale, { dateStyle: "short", timeZone: timeZone })} ${lang === "en" ? "at" : "om"} ${new Date().toLocaleTimeString(locale, { timeStyle: "long", timeZone: timeZone })}`;
 
 	const vevents: VEVENT[] = [];
 	for (const [date, events] of Object.entries(activitiesByDate)) {
 		const eventAmount = events.length;
-		const SUMMARY = `${eventAmount} ${eventAmount === 1 ? "taak" : "taken"}`;
+
+		let SUMMARY: string;
+		if(lang === "nl") {
+		 	SUMMARY = `${eventAmount} ${eventAmount === 1 ? "taak" : "taken"}`;
+		} else {
+			SUMMARY = `${eventAmount} ${eventAmount === 1 ? "task" : "tasks"}`;
+		}
 
 		let description = "";
 
@@ -220,7 +269,11 @@ export async function handle(
 			description += "<br>";
 		}
 
-		description += `<i>Laatst gesynchroniseerd op ${nowDate}</i>`;
+		if(lang === "nl") {
+			description += `<i>Laatst gesynchroniseerd op ${nowDate}</i>`;
+		} else {
+			description += `<i>Last synced on ${nowDate}</i>`;
+		}
 
 		vevents.push({
 			SUMMARY: SUMMARY,

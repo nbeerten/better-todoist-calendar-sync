@@ -2,7 +2,7 @@
 	"VCALENDAR": [
 		{
 			"VERSION": "2.0",
-			"PRODID": "-//Apple Computer\\\\, Inc//iCal 1.5//EN",
+			"PRODID": "-//nbeerten//transform-todoist//EN",
 			"CALSCALE": "GREGORIAN",
 			"UID": "",
 			"X-WR-CALNAME": "",
