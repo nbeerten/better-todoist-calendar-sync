@@ -8,5 +8,5 @@ Currently, it's only available in Dutch.
 
 Usage is as follows:
 Go to your Todoist settings, then navigate to the Integrations tab. Head to the "Developer" section, then copy your API Token.
-Then add the API token to the following URL: 'https://transform-todoist.nilsbeerten.nl/ical?apiToken={Your api token}'.
+Then add the API token to the following URL: 'https://transform-todoist.nilsbeerten.nl/ical?apiToken={your_api_token}'.
 This URL can now be added to your calendar, by clicking an option along the lines of "Via URL" or "Subscribe to a calendar".
