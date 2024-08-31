@@ -2,8 +2,8 @@
 This tool helps you see your Todoist tasks in a calendar format, making them easier to manage. Here's how it works:
 
 * **Retrieves Todoist Tasks:** It grabs all your Todoist tasks using your API token.
-* **Creates Daily Events:** It creates a daily calendar event with all your tasks for that day, nicely grouped together with information like labels, description and project + section.
-* **Works with Popular Calendars:** Initially optimized for use with Proton Calendar. From testing it also seems to work with Google Calendar.
+* **Creates Daily Events:** It creates a daily calendar event with all your tasks for that day, nicely grouped together with information like labels, description, and project + section.
+* **Works with Popular Calendars:** Initially optimized for use with Proton Calendar. From testing, it also seems to work with Google Calendar.
 
 ## Setup
 
@@ -12,7 +12,7 @@ This tool helps you see your Todoist tasks in a calendar format, making them eas
     * Copy the API token shown there.
 
 2. **Build Your Calendar Link:**
-    * Take this base URL: `https://transform-todoist.nilsbeerten.nl/ical?apiToken={your_api_token}`
+    * Take this base URL: `https://todoist-sync.nilsbeerten.nl/ical?apiToken={your_api_token}`
     * Replace `{your_api_token}` with your actual API token you copied.
 
 3. **Set Your Language and Time Zone (Optional):**

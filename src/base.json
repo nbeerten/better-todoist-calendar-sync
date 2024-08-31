@@ -2,10 +2,11 @@
 	"VCALENDAR": [
 		{
 			"VERSION": "2.0",
-			"PRODID": "-//nbeerten//transform-todoist//EN",
+			"PRODID": "-//nbeerten//better-todoist-calendar-sync//EN",
 			"CALSCALE": "GREGORIAN",
 			"UID": "",
 			"X-WR-CALNAME": "",
+			"X-WR-CALDESC": "",
 			"X-WR-TIMEZONE": "Etc/UTC",
 			"X-PUBLISHED-TTL": "PT10M",
 			"X-APPLE-CALENDAR-COLOR": "#D34E3A",

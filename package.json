@@ -6,18 +6,15 @@
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"test": "vitest",
 		"cf-typegen": "wrangler types",
-		"format": "biome format --write .",
-		"lint": "biome lint --write ."
+		"format": "biome format --write src",
+		"lint": "biome lint --write src"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
-		"@cloudflare/vitest-pool-workers": "^0.4.5",
 		"@cloudflare/workers-types": "^4.20240821.1",
-		"typescript": "^5.5.2",
-		"vitest": "1.5.0",
-		"wrangler": "^3.60.3"
+		"typescript": "^5.5.4",
+		"wrangler": "^3.73.0"
 	},
 	"packageManager": "pnpm@9.9.0+sha512.60c18acd138bff695d339be6ad13f7e936eea6745660d4cc4a776d5247c540d0edee1a563695c183a66eb917ef88f2b4feb1fc25f32a7adcadc7aaf3438e99c1"
 }

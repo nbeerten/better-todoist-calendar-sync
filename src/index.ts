@@ -17,7 +17,10 @@ export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const path = new URL(request.url).pathname;
 		if (request.method !== "GET" || path === "/") {
-			return Response.redirect("https://github.com/nbeerten/better-todoist-calendar-sync", 303);
+			return Response.redirect(
+				"https://github.com/nbeerten/better-todoist-calendar-sync",
+				303,
+			);
 		}
 
 		return handle(request, env, ctx);

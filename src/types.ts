@@ -5,6 +5,7 @@ export type JSONCalendar = {
 		CALSCALE: string;
 		UID: string;
 		"X-WR-CALNAME": string;
+		"X-WR-CALDESC": string;
 		"X-WR-TIMEZONE": string;
 		"X-PUBLISHED-TTL": string;
 		"X-APPLE-CALENDAR-COLOR": string;
