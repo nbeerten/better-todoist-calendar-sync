@@ -1,6 +1,6 @@
-# Better Todoist Calendar Sync (todoist-sync)
-![Screenshot of Proton Calendar, prominently displaying a Calendar event named "2 tasks", with an event description containing a few example tasks, with Lorum Ipsum text as task description.](https://github.com/user-attachments/assets/a6638d8c-2f33-4b8a-90fd-fee4b32b3033)
----
+![Thumbnail and example of this project, with the title: better-todoist-calendar-sync](https://github.com/user-attachments/assets/4dbafda0-f67e-48e0-b3f4-0966d81cee35)
+
+# Better Todoist Calendar Sync
 This tool helps you see your Todoist tasks in a calendar format, making them easier to manage. Here's how it works:
 
 * **Retrieves Todoist tasks:** It grabs all your Todoist tasks using your API token.
