@@ -51,3 +51,20 @@ export type TasksResponse = Array<{
 	duration: null;
 	deadline: null;
 }>;
+
+export type TaskObject = {
+	summary: string;
+	description: string;
+	labels: Array<string>;
+	url: string;
+	projectId?: string;
+	sectionId?: string;
+	uid: string;
+	date: [string, string];
+};
+
+export type UserPreferences = {
+	lang: "nl" | "en";
+	locale: Intl.Locale;
+	timeZone: string;
+};
